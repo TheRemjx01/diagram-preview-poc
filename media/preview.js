@@ -6,7 +6,7 @@
 
     // Add styles for our custom blocks
     const style = document.createElement('style');
-    style.textContent = `
+    style.textContent = window.customBlockStyles || `
         .custom-diagram-block {
             border: 1px solid #ccc;
             padding: 10px;
@@ -27,19 +27,19 @@
         }
     `;
     document.head.appendChild(style);
-
+    // turn off the debug logging
     // Log when custom blocks are found
-    const observer = new MutationObserver((mutations) => {
-        for (const mutation of mutations) {
-            const customBlocks = mutation.target.getElementsByClassName('custom-diagram-block');
-            if (customBlocks.length > 0) {
-                console.log('Found custom blocks:', customBlocks.length);
-            }
-        }
-    });
+    // const observer = new MutationObserver((mutations) => {
+    //     for (const mutation of mutations) {
+    //         const customBlocks = mutation.target.getElementsByClassName('custom-diagram-block');
+    //         if (customBlocks.length > 0) {
+    //             console.log('Found custom blocks:', customBlocks.length);
+    //         }
+    //     }
+    // });
 
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
+    // observer.observe(document.body, {
+    //     childList: true,
+    //     subtree: true
+    // });
 })();
