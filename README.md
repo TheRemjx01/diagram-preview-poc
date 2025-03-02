@@ -2,6 +2,9 @@
 
 A Visual Studio Code extension that enhances the built-in Markdown preview with custom diagram syntax support.
 
+[![Built with Cursor](https://img.shields.io/badge/Built_with-Cursor-5B86E5.svg)](https://cursor.sh)
+[![Powered by Claude 3.5 Sonnet](https://img.shields.io/badge/Powered_by-Claude_3.5_Sonnet-8A2BE2.svg)](https://www.anthropic.com/claude)
+
 ## Features
 
 - Custom diagram blocks with styled containers
@@ -190,6 +193,12 @@ Regular markdown content continues here...
 ## Development
 
 For detailed development and debugging guidelines, please refer to [DEVELOPMENT.md](DEVELOPMENT.md).
+
+## Credits
+
+This project was developed with:
+- [Cursor](https://cursor.sh) - The AI-first code editor
+- [Claude 3.5 Sonnet](https://www.anthropic.com/claude) - Advanced AI assistant by Anthropic
 
 ## License
 

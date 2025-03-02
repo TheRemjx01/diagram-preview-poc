@@ -1,8 +1,11 @@
 const { RuleStrategy } = require('../../strategies');
+const fs = require('fs');
+const path = require('path');
 
 class GroupRuleStrategy extends RuleStrategy {
     constructor() {
         super('group', null, null);
+        this.styles = null;
     }
 
     matches(line) {
@@ -19,19 +22,29 @@ class GroupRuleStrategy extends RuleStrategy {
     }
 
     getStyles() {
-        return `
-            .cd-group {
-                border: 2px solid #4a9eff;
-                padding: 8px;
-                margin: 5px 0;
-                border-radius: 4px;
+        if (!this.styles) {
+            const cssPath = path.join(__dirname, 'styles.css');
+            try {
+                this.styles = fs.readFileSync(cssPath, 'utf8');
+            } catch (error) {
+                console.error('Error loading styles:', error);
+                // Fallback to default styles if file loading fails
+                this.styles = `
+                    .cd-group {
+                        border: 2px solid #4a9eff;
+                        padding: 8px;
+                        margin: 5px 0;
+                        border-radius: 4px;
+                    }
+                    
+                    .cd-group-content {
+                        font-weight: bold;
+                        color: #2c5ea5;
+                    }
+                `;
             }
-            
-            .cd-group-content {
-                font-weight: bold;
-                color: #2c5ea5;
-            }
-        `;
+        }
+        return this.styles;
     }
 }
 
