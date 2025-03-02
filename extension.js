@@ -1,94 +1,6 @@
 const vscode = require('vscode');
-const MarkdownIt = require('markdown-it');
-
-// Strategy interface for rule handlers
-class RuleStrategy {
-    constructor(name, startPattern, endPattern) {
-        this.name = name;
-        this.startPattern = startPattern;
-        this.endPattern = endPattern;
-    }
-
-    matches(line) {
-        return false;
-    }
-
-    parse(line) {
-        return null;
-    }
-
-    render(content) {
-        return '';
-    }
-}
-
-// Group rule implementation
-class GroupRuleStrategy extends RuleStrategy {
-    constructor() {
-        super('group', null, null);
-    }
-
-    matches(line) {
-        return line.match(/^group\s+"([^"]+)"$/);
-    }
-
-    parse(line) {
-        const match = line.match(/^group\s+"([^"]+)"$/);
-        return match ? match[1] : null;
-    }
-
-    render(content) {
-        return `<div class="cd-group"><div class="cd-group-content">${content}</div></div>\n`;
-    }
-}
-
-// Block manager to handle custom block state and rules
-class CustomBlockManager {
-    constructor() {
-        this.rules = new Map();
-        this.inBlock = false;
-    }
-
-    addRule(rule) {
-        this.rules.set(rule.name, rule);
-    }
-
-    processLine(line) {
-        for (const rule of this.rules.values()) {
-            if (rule.matches(line)) {
-                const content = rule.parse(line);
-                return content ? rule.render(content) : '';
-            }
-        }
-        return null;
-    }
-
-    handleBlockStart(state, startLine) {
-        const token = state.push('html_block', '', 0);
-        token.content = '<div class="custom-diagram-block">\n';
-        token.map = [startLine, startLine + 1];
-        this.inBlock = true;
-        return token;
-    }
-
-    handleBlockEnd(state, startLine) {
-        const token = state.push('html_block', '', 0);
-        token.content = '</div>\n';
-        token.map = [startLine, startLine + 1];
-        this.inBlock = false;
-        return token;
-    }
-
-    handleContent(state, startLine, line) {
-        const result = this.processLine(line);
-        if (result !== null) {
-            const token = state.push('html_inline', '', 0);
-            token.content = result;
-            return token;
-        }
-        return null;
-    }
-}
+const CustomBlockManager = require('./managers/BlockManager');
+const GroupRuleStrategy = require('./rules/group');
 
 function activate(context) {
     // Register command
@@ -102,6 +14,8 @@ function activate(context) {
     return {
         extendMarkdownIt(md) {
             const blockManager = new CustomBlockManager();
+
+            // Register rules
             blockManager.addRule(new GroupRuleStrategy());
 
             // Add custom block rule
@@ -154,9 +68,5 @@ function deactivate() {}
 
 module.exports = {
     activate,
-    deactivate,
-    // Export classes for external use
-    RuleStrategy,
-    GroupRuleStrategy,
-    CustomBlockManager
+    deactivate
 };
