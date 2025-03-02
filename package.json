@@ -1,0 +1,98 @@
+{
+  "name": "markdown-preview-enhancer",
+  "displayName": "Markdown Preview Enhancer",
+  "description": "VS Code extension for enhanced markdown preview with custom syntax support",
+  "publisher": "theremjx",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/theremjx/diagram-preview-poc.git"
+  },
+  "bugs": {
+    "url": "https://github.com/theremjx/diagram-preview-poc/issues"
+  },
+  "homepage": "https://github.com/theremjx/diagram-preview-poc#readme",
+  "license": "MIT",
+  "keywords": [
+    "markdown",
+    "preview",
+    "custom-syntax",
+    "diagram"
+  ],
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:markdown",
+    "onCommand:markdown-preview-enhancer.refreshPreview"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "markdown-preview-enhancer.refreshPreview",
+        "title": "Refresh Markdown Preview Enhancement"
+      }
+    ],
+    "markdown.previewScripts": [
+      "./media/preview.js"
+    ],
+    "markdown.markdownItPlugins": true,
+    "markdown.previewStyles": [
+      "./media/preview.css"
+    ]
+  },
+  "scripts": {
+    "clean": "rm -rf public/*.vsix",
+    "preclean": "mkdir -p public",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "pretest": "npm run lint",
+    "test": "node ./test/runTest.js",
+    "prepackage": "npm run clean",
+    "package": "vsce package --out public/markdown-preview-enhancer.vsix",
+    "vscode:prepublish": "npm run lint && npm run clean",
+    "prepare": "npm run clean"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.24.0",
+    "@babel/eslint-parser": "^7.23.10",
+    "@types/node": "^20.10.0",
+    "eslint": "^8.54.0",
+    "glob": "^10.3.10",
+    "mocha": "^10.2.0",
+    "@vscode/test-electron": "^2.3.8",
+    "@vscode/vsce": "^2.24.0"
+  },
+  "dependencies": {
+    "markdown-it": "^14.0.0"
+  },
+  "parser": "@babel/eslint-parser",
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "module"
+  },
+  "env": {
+    "node": true,
+    "es6": true,
+    "mocha": true
+  },
+  "rules": {
+    "no-unused-vars": ["warn", { "args": "none" }],
+    "semi": ["error", "always"],
+    "quotes": ["error", "single"],
+    "indent": ["error", 4],
+    "no-trailing-spaces": "error"
+  },
+  "overrides": [
+    {
+      "files": ["test/**/*.js"],
+      "rules": {
+        "no-console": "off"
+      }
+    }
+  ]
+} 

@@ -1,0 +1,50 @@
+{
+    "root": true,
+    "parser": "@babel/eslint-parser",
+    "parserOptions": {
+        "ecmaVersion": 2021,
+        "sourceType": "module",
+        "requireConfigFile": false
+    },
+    "env": {
+        "node": true,
+        "es6": true,
+        "mocha": true
+    },
+    "extends": [
+        "eslint:recommended"
+    ],
+    "rules": {
+        "no-unused-vars": ["warn", { "args": "none" }],
+        "semi": ["error", "always"],
+        "quotes": ["error", "single"],
+        "indent": ["error", 4],
+        "no-trailing-spaces": "error",
+        "eol-last": "error",
+        "no-console": ["warn", { "allow": ["warn", "error"] }],
+        "no-var": "error",
+        "prefer-const": "warn",
+        "no-multiple-empty-lines": ["error", { "max": 1 }]
+    },
+    "ignorePatterns": [
+        "out",
+        "dist",
+        "**/*.d.ts",
+        "node_modules",
+        ".vscode-test"
+    ],
+    "overrides": [
+        {
+            "files": ["test/**/*.js"],
+            "rules": {
+                "no-console": "off"
+            }
+        },
+        {
+            "files": ["media/preview.js"],
+            "env": {
+                "browser": true
+            }
+        }
+    ]
+} 
