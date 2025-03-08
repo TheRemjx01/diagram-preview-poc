@@ -87,12 +87,11 @@
     "indent": ["error", 4],
     "no-trailing-spaces": "error"
   },
-  "overrides": [
-    {
-      "files": ["test/**/*.js"],
+  "overrides": {
+    "test/**/*.js": {
       "rules": {
         "no-console": "off"
       }
     }
-  ]
+  }
 } 

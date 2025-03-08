@@ -2,6 +2,7 @@
 
 // This script runs in the webview context
 (function() {
+    // eslint-disable-next-line no-console
     console.log('Preview script loaded');
 
     // Add styles for our custom blocks
