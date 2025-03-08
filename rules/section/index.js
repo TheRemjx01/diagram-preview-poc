@@ -2,23 +2,23 @@ const { RuleStrategy } = require('../../strategies');
 const fs = require('fs');
 const path = require('path');
 
-class GroupRuleStrategy extends RuleStrategy {
+class SectionRuleStrategy extends RuleStrategy {
     constructor() {
-        super('group', null, null);
+        super('section', null, null);
         this.styles = null;
     }
 
     matches(line) {
-        return line.match(/^group\s+"([^"]+)"$/);
+        return line.match(/^section\s+"([^"]+)"$/);
     }
 
     parse(line) {
-        const match = line.match(/^group\s+"([^"]+)"$/);
+        const match = line.match(/^section\s+"([^"]+)"$/);
         return match ? match[1] : null;
     }
 
     render(content) {
-        return `<div class="cd-group"><div class="cd-group-content">${content}</div></div>\n`;
+        return `<div class="diagram-section"><div class="diagram-section-content">${content}</div></div>\n`;
     }
 
     getStyles() {
@@ -30,14 +30,14 @@ class GroupRuleStrategy extends RuleStrategy {
                 console.error('Error loading styles:', error);
                 // Fallback to default styles if file loading fails
                 this.styles = `
-                    .cd-group {
+                    .diagram-section {
                         border: 2px solid #4a9eff;
                         padding: 8px;
                         margin: 5px 0;
                         border-radius: 4px;
                     }
                     
-                    .cd-group-content {
+                    .diagram-section-content {
                         font-weight: bold;
                         color: #2c5ea5;
                     }
@@ -48,4 +48,4 @@ class GroupRuleStrategy extends RuleStrategy {
     }
 }
 
-module.exports = GroupRuleStrategy;
+module.exports = SectionRuleStrategy;

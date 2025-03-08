@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { RuleStrategy, CustomBlockManager, GroupRuleStrategy } = require('../../extension');
+const { RuleStrategy, CustomBlockManager, SectionRuleStrategy } = require('../../extension');
 const MarkdownIt = require('markdown-it');
 
 suite('Extension Test Suite', () => {
@@ -10,41 +10,41 @@ suite('Extension Test Suite', () => {
         assert.strictEqual(rule.render('content'), '');
     });
 
-    test('GroupRuleStrategy', () => {
-        const rule = new GroupRuleStrategy();
+    test('SectionRuleStrategy', () => {
+        const rule = new SectionRuleStrategy();
 
         // Test matches
-        assert.strictEqual(rule.matches('group "test content"'), true);
-        assert.strictEqual(rule.matches('not a group'), false);
-        assert.strictEqual(rule.matches('group without quotes'), false);
+        assert.strictEqual(rule.matches('section "test content"'), true);
+        assert.strictEqual(rule.matches('not a section'), false);
+        assert.strictEqual(rule.matches('section without quotes'), false);
 
         // Test parse
-        assert.strictEqual(rule.parse('group "hello world"'), 'hello world');
-        assert.strictEqual(rule.parse('not a group'), null);
+        assert.strictEqual(rule.parse('section "hello world"'), 'hello world');
+        assert.strictEqual(rule.parse('not a section'), null);
 
         // Test render
         const rendered = rule.render('test content');
         assert.strictEqual(
             rendered,
-            '<div class="cd-group"><div class="cd-group-content">test content</div></div>'
+            '<div class="diagram-section"><div class="diagram-section-content">test content</div></div>'
         );
     });
 
     test('CustomBlockManager', () => {
         const manager = new CustomBlockManager();
-        const rule = new GroupRuleStrategy();
+        const rule = new SectionRuleStrategy();
 
         // Test rule registration
         manager.addRule(rule);
-        assert.strictEqual(manager.rules.has('group'), true);
+        assert.strictEqual(manager.rules.has('section'), true);
         assert.strictEqual(manager.rules.size, 1);
 
         // Test line processing
         assert.strictEqual(manager.inBlock, false);
-        const result = manager.processLine('group "test content"');
+        const result = manager.processLine('section "test content"');
         assert.strictEqual(
             result,
-            '<div class="cd-group"><div class="cd-group-content">test content</div></div>'
+            '<div class="diagram-section"><div class="diagram-section-content">test content</div></div>'
         );
 
         // Test invalid line processing
@@ -59,16 +59,16 @@ suite('Extension Test Suite', () => {
 
         // Test markdown rendering
         const input = [
-            '# CD_BEGIN',
-            'group "hello world"',
-            '# CD_END'
+            '# DIAGRAM_BEGIN',
+            'section "hello world"',
+            '# DIAGRAM_END'
         ].join('\n');
 
         const result = extended.render(input);
 
         // Verify the output contains our custom elements
-        assert.ok(result.includes('custom-diagram-block'));
-        assert.ok(result.includes('cd-group'));
+        assert.ok(result.includes('diagram-block'));
+        assert.ok(result.includes('diagram-section'));
         assert.ok(result.includes('hello world'));
     });
 });
@@ -107,7 +107,7 @@ suite('Custom Rule Strategy Example', () => {
         // Test render
         assert.strictEqual(
             rule.render('content'),
-            '<div class="test-rule">content</div>'
+            '<div class="diagram-block">content</div>'
         );
     });
 
@@ -120,7 +120,7 @@ suite('Custom Rule Strategy Example', () => {
         const result = manager.processLine('test: custom content');
         assert.strictEqual(
             result,
-            '<div class="test-rule">custom content</div>'
+            '<div class="diagram-block">custom content</div>'
         );
     });
 });

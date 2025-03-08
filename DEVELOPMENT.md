@@ -102,9 +102,9 @@ sequenceDiagram
 4. **Test Scenarios**:
    ```markdown
    # Test different block combinations
-   # CD_BEGIN
-   group "Test Group"
-   # CD_END
+   # DIAGRAM_BEGIN
+   section "Test Group"
+   # DIAGRAM_END
    ```
 
 ### Debug Points

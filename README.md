@@ -8,7 +8,7 @@ A Visual Studio Code extension that enhances the built-in Markdown preview with 
 ## Features
 
 - Custom diagram blocks with styled containers
-- Group syntax for organizing content
+- Section-based content organization
 - Seamless integration with VS Code's built-in Markdown preview
 - Modular rule system for easy extension
 - Dynamic styling per rule
@@ -60,19 +60,19 @@ sequenceDiagram
 Create custom diagram blocks using the following syntax:
 
 ```markdown
-# CD_BEGIN
-group "Your Group Name"
-# CD_END
+# DIAGRAM_BEGIN
+section "Your Section Name"
+# DIAGRAM_END
 ```
 
-You can have multiple groups within a block:
+You can have multiple sections within a block:
 
 ```markdown
-# CD_BEGIN
-group "Frontend"
-group "Backend"
-group "Database"
-# CD_END
+# DIAGRAM_BEGIN
+section "Frontend"
+section "Backend"
+section "Database"
+# DIAGRAM_END
 ```
 
 ### Preview Your Markdown
@@ -92,8 +92,9 @@ If needed, you can manually refresh the preview:
 ```
 project/
 ├── rules/              # Individual rule implementations
-│   └── group/         # Example group rule
-│       └── index.js   # Rule implementation with its styles
+│   └── section/       # Section rule implementation
+│       ├── index.js   # Rule implementation
+│       └── styles.css # Section-specific styles
 ├── strategies/        # Base strategy classes
 │   └── index.js      # RuleStrategy base class
 ├── managers/         # Rule management
@@ -175,11 +176,11 @@ The `CustomBlockManager` handles:
 
 Here's our system layout:
 
-# CD_BEGIN
-group "User Interface"
-group "API Gateway"
-group "Database"
-# CD_END
+# DIAGRAM_BEGIN
+section "User Interface"
+section "API Gateway"
+section "Database"
+# DIAGRAM_END
 
 Regular markdown content continues here...
 ```

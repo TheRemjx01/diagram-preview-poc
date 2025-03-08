@@ -5,21 +5,21 @@
 The extension implements custom syntax for markdown preview with the following format:
 
 ```markdown
-# CD_BEGIN
-group "hello world"
-# CD_END
+# DIAGRAM_BEGIN
+section "hello world"
+# DIAGRAM_END
 ```
 
 ## Implementation Details
 
 1. Block Markers:
-   - Begin: `# CD_BEGIN`
-   - End: `# CD_END`
-   - Renders as a div with class `custom-diagram-block`
+   - Begin: `# DIAGRAM_BEGIN`
+   - End: `# DIAGRAM_END`
+   - Renders as a div with class `diagram-block`
 
-2. Group Element:
-   - Syntax: `group "text"`
-   - Renders as nested divs with classes `cd-group` and `cd-group-content`
+2. Section Element:
+   - Syntax: `section "text"`
+   - Renders as nested divs with classes `diagram-section` and `diagram-section-content`
 
 ## Strategy Pattern Implementation
 
@@ -39,46 +39,39 @@ class RuleStrategy {
 }
 ```
 
-Example implementation (GroupRuleStrategy):
+Example implementation (SectionRuleStrategy):
 ```javascript
-class GroupRuleStrategy extends RuleStrategy {
+class SectionRuleStrategy extends RuleStrategy {
     matches(line) {
-        return line.match(/^group\s+"([^"]+)"$/);
+        return line.match(/^section\s+"([^"]+)"$/);
     }
 
     parse(line) {
-        const match = line.match(/^group\s+"([^"]+)"$/);
+        const match = line.match(/^section\s+"([^"]+)"$/);
         return match ? match[1] : null;
     }
 
     render(content) {
-        return `<div class="cd-group"><div class="cd-group-content">${content}</div></div>`;
+        return `<div class="diagram-section"><div class="diagram-section-content">${content}</div></div>`;
     }
 }
 ```
 
 ## Styling
 
-The preview styling is defined in `media/preview.js`:
+The preview styling is defined in `rules/section/styles.css`:
 
 ```css
-.custom-diagram-block {
-    margin: 1em 0;
-    padding: 1em;
-    background-color: #f8f8f8;
+.diagram-section {
+    border: 2px solid #4a9eff;
+    padding: 8px;
+    margin: 5px 0;
     border-radius: 4px;
 }
 
-.cd-group {
-    margin: 0.5em 0;
-    padding: 0.5em;
-}
-
-.cd-group-content {
-    border: 1px solid #ccc;
-    padding: 1em;
-    border-radius: 4px;
-    background-color: white;
+.diagram-section-content {
+    font-weight: bold;
+    color: #2c5ea5;
 }
 ```
 
@@ -127,6 +120,6 @@ The GitHub workflow:
 Key configuration files:
 - `package.json`: Extension metadata and scripts
 - `extension.js`: Main implementation
-- `media/preview.js`: Preview styling
+- `rules/section/styles.css`: Section styling
 - `.eslintrc.json`: Linting rules
 - `.github/workflows/publish.yml`: CI/CD configuration 

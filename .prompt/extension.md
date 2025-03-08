@@ -168,13 +168,13 @@ graph TD
 ## Custom Syntax
 
 ### Block Markers
-- `# CD_BEGIN`: Starts a custom diagram block
-- `# CD_END`: Ends a custom diagram block
+- `# DIAGRAM_BEGIN`: Starts a custom diagram block
+- `# DIAGRAM_END`: Ends a custom diagram block
 
-### Group Elements
+### section Elements
 Inside a custom block, use:
 ```markdown
-group "Your Text Here"
+section "Your Text Here"
 ```
 
 ## Implementation Details
@@ -191,13 +191,13 @@ group "Your Text Here"
 ### Markdown-it Integration
 The extension uses markdown-it's block rule system to:
 1. Detect custom block markers
-2. Parse group elements
+2. Parse section elements
 3. Generate HTML with appropriate classes
 
 ### CSS Classes
 - `.custom-diagram-block`: Container for the entire block
-- `.cd-group`: Individual group container
-- `.cd-group-content`: Group text content
+- `.diagram-section`: Individual section container
+- `.diagram-section-content`: section text content
 
 ## Adding New Rules
 
@@ -223,17 +223,17 @@ The extension uses markdown-it's block rule system to:
 
 ## Example Usage
 ```markdown
-# CD_BEGIN
-group "Component A"
-group "Component B"
-# CD_END
+# DIAGRAM_BEGIN
+section "Component A"
+section "Component B"
+# DIAGRAM_END
 ```
 
 Renders as:
 ```html
-<div class="custom-diagram-block">
-  <div class="cd-group"><div class="cd-group-content">Component A</div></div>
-  <div class="cd-group"><div class="cd-group-content">Component B</div></div>
+<div class="diagram-block">
+  <div class="diagram-section"><div class="diagram-section-content">Component A</div></div>
+  <div class="diagram-section"><div class="diagram-section-content">Component B</div></div>
 </div>
 ```
 

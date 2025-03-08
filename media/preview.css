@@ -1,19 +1,19 @@
 /* Custom block styles */
-.custom-diagram-block {
+.diagram-block {
     border: 1px solid #ccc;
     padding: 10px;
     margin: 10px 0;
     background-color: #f9f9f9;
 }
 
-.cd-group {
+.diagram-section {
     border: 2px solid #4a9eff;
     padding: 8px;
     margin: 5px 0;
     border-radius: 4px;
 }
 
-.cd-group-content {
+.diagram-section-content {
     font-weight: bold;
     color: #2c5ea5;
 } 

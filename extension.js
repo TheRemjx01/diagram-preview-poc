@@ -1,6 +1,6 @@
 const vscode = require('vscode');
 const CustomBlockManager = require('./managers/BlockManager');
-const GroupRuleStrategy = require('./rules/group');
+const SectionRuleStrategy = require('./rules/section');
 
 function activate(context) {
     // Register command
@@ -16,7 +16,7 @@ function activate(context) {
             const blockManager = new CustomBlockManager();
 
             // Register rules
-            blockManager.addRule(new GroupRuleStrategy());
+            blockManager.addRule(new SectionRuleStrategy());
 
             // Add custom block rule
             md.block.ruler.before('fence', 'custom_block', (state, startLine, endLine, silent) => {
@@ -24,8 +24,8 @@ function activate(context) {
                 const max = state.eMarks[startLine];
                 const line = state.src.slice(pos, max).trim();
 
-                // Check for CD_BEGIN/CD_END
-                if (line === '# CD_BEGIN') {
+                // Check for DIAGRAM_BEGIN/DIAGRAM_END
+                if (line === '# DIAGRAM_BEGIN') {
                     if (!silent) {
                         blockManager.handleBlockStart(state, startLine);
                         state.env.inCustomBlock = true;
@@ -34,7 +34,7 @@ function activate(context) {
                     return true;
                 }
 
-                if (line === '# CD_END') {
+                if (line === '# DIAGRAM_END') {
                     if (!silent) {
                         blockManager.handleBlockEnd(state, startLine);
                         state.env.inCustomBlock = false;
@@ -43,7 +43,7 @@ function activate(context) {
                     return true;
                 }
 
-                // Handle group content
+                // Handle section content
                 if (state.env.inCustomBlock) {
                     if (!silent && blockManager.handleContent(state, startLine, line)) {
                         state.line = startLine + 1;
