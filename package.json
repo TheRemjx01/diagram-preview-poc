@@ -86,12 +86,5 @@
     "quotes": ["error", "single"],
     "indent": ["error", 4],
     "no-trailing-spaces": "error"
-  },
-  "overrides": {
-    "test/**/*.js": {
-      "rules": {
-        "no-console": "off"
-      }
-    }
   }
 } 

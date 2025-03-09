@@ -12,8 +12,10 @@ section "Hello World"
 
 # DIAGRAM_BEGIN
 section "User Interface"
-section "Database"
+    section-content "Database"
+    section-content "AWS2 DB2"
 section "API Server"
+    section-content "another-one"
 # DIAGRAM_END
 
 ## Mixed Content Example

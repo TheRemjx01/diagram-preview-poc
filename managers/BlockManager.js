@@ -1,7 +1,8 @@
-class CustomBlockManager {
+class BlockManager {
     constructor() {
         this.rules = new Map();
-        this.inBlock = false;
+        this.currentBlock = null;
+        this.currentEndPattern = null;
     }
 
     addRule(rule) {
@@ -9,12 +10,27 @@ class CustomBlockManager {
     }
 
     processLine(line) {
-        for (const rule of this.rules.values()) {
-            if (rule.matches(line)) {
-                const content = rule.parse(line);
-                return content ? rule.render(content) : '';
-            }
+        // Check for block start/end patterns
+        if (line.trim() === '# DIAGRAM_BEGIN') {
+            this.currentBlock = [];
+            this.currentEndPattern = '# DIAGRAM_END';
+            return null;
         }
+
+        if (line.trim() === this.currentEndPattern) {
+            const blockContent = this.currentBlock.join('\n');
+            this.currentBlock = null;
+            this.currentEndPattern = null;
+            return blockContent;
+        }
+
+        // If we're not in a block, return null
+        if (!this.currentBlock) {
+            return null;
+        }
+
+        // Process the line within the current block
+        this.currentBlock.push(line);
         return null;
     }
 
@@ -63,4 +79,4 @@ class CustomBlockManager {
     }
 }
 
-module.exports = CustomBlockManager;
+module.exports = BlockManager;

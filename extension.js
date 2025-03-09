@@ -1,65 +1,67 @@
 const vscode = require('vscode');
-const CustomBlockManager = require('./managers/BlockManager');
-const SectionRuleStrategy = require('./rules/section');
+const MarkdownIt = require('markdown-it');
+const SectionStrategy = require('./rules/section');
+const BlockManager = require('./managers/BlockManager');
 
 function activate(context) {
-    // Register command
-    const disposable = vscode.commands.registerCommand('markdown-preview-enhancer.refreshPreview', () => {
+    console.log('Extension is now active!');
+
+    const md = new MarkdownIt({
+        html: true,
+        linkify: true,
+        typographer: true
+    });
+
+    const blockManager = new BlockManager();
+    const sectionStrategy = new SectionStrategy();
+    blockManager.addRule(sectionStrategy);
+
+    const customSyntaxPlugin = (md) => {
+        const defaultRender = md.renderer.rules.fence || function(tokens, idx, options, env, slf) {
+            return slf.renderToken(tokens, idx, options);
+        };
+
+        md.renderer.rules.fence = (tokens, idx, options, env, slf) => {
+            const token = tokens[idx];
+            const content = token.content.trim();
+            const lines = content.split('\n');
+            let result = '';
+            let currentBlock = [];
+
+            for (const line of lines) {
+                const blockContent = blockManager.processLine(line);
+                if (blockContent !== null) {
+                    // Process the complete block
+                    const blockLines = blockContent.split('\n');
+                    let blockResult = '';
+                    for (const blockLine of blockLines) {
+                        const lineResult = sectionStrategy.processContent(blockLine);
+                        if (lineResult !== null) {
+                            blockResult += lineResult + '\n';
+                        }
+                    }
+                    result += blockResult;
+                }
+            }
+
+            // Close any remaining sections
+            result += sectionStrategy.endSection(0);
+
+            return `<div class="diagram-container">${result}</div>`;
+        };
+    };
+
+    md.use(customSyntaxPlugin);
+
+    let disposable = vscode.commands.registerCommand('markdown-preview-enhancer.refreshPreview', () => {
         vscode.commands.executeCommand('markdown.preview.refresh');
     });
 
     context.subscriptions.push(disposable);
 
-    // Register the custom markdown-it plugin
     return {
         extendMarkdownIt(md) {
-            const blockManager = new CustomBlockManager();
-
-            // Register rules
-            blockManager.addRule(new SectionRuleStrategy());
-
-            // Add custom block rule
-            md.block.ruler.before('fence', 'custom_block', (state, startLine, endLine, silent) => {
-                const pos = state.bMarks[startLine] + state.tShift[startLine];
-                const max = state.eMarks[startLine];
-                const line = state.src.slice(pos, max).trim();
-
-                // Check for DIAGRAM_BEGIN/DIAGRAM_END
-                if (line === '# DIAGRAM_BEGIN') {
-                    if (!silent) {
-                        blockManager.handleBlockStart(state, startLine);
-                        state.env.inCustomBlock = true;
-                    }
-                    state.line = startLine + 1;
-                    return true;
-                }
-
-                if (line === '# DIAGRAM_END') {
-                    if (!silent) {
-                        blockManager.handleBlockEnd(state, startLine);
-                        state.env.inCustomBlock = false;
-                    }
-                    state.line = startLine + 1;
-                    return true;
-                }
-
-                // Handle section content
-                if (state.env.inCustomBlock) {
-                    if (!silent && blockManager.handleContent(state, startLine, line)) {
-                        state.line = startLine + 1;
-                        return true;
-                    }
-                }
-
-                return false;
-            });
-
-            // Initialize custom block environment
-            md.core.ruler.before('block', 'custom_block_init', state => {
-                state.env.inCustomBlock = false;
-            });
-
-            return md;
+            return md.use(customSyntaxPlugin);
         }
     };
 }
